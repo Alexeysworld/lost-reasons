@@ -3,3 +3,4 @@ __pycache__/
 data/notes/
 data/*dump*.json
 data/deals_dump*.json
+data/file3.json
