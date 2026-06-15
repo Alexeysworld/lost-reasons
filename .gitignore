@@ -1,3 +1,5 @@
 __pycache__/
 *.pyc
 data/notes/
+data/*dump*.json
+data/deals_dump*.json

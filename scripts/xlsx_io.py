@@ -69,6 +69,31 @@ def write(inp, clsf_path, outp):
     wb.save(outp)
     print(f"wrote {outp} (+{len(ADDED)} columns)")
 
+def write_from_json(input_json, clsf_path, outp):
+    """Build a result xlsx from data/input.json (Pipedrive-sourced, no source xlsx)."""
+    src = json.load(open(input_json))
+    headers, rows = src["headers"], src["rows"]
+    cls = json.load(open(clsf_path))
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    bold = Font(bold=True); fill = PatternFill("solid", fgColor="FFF2CC")
+    all_headers = headers + ADDED
+    for c, name in enumerate(all_headers, 1):
+        cell = ws.cell(1, c, name); cell.font = bold
+        if name in ADDED:
+            cell.fill = fill
+    for r, row in enumerate(rows, 2):
+        for c, h in enumerate(headers, 1):
+            ws.cell(r, c, row.get(h))
+        did = row.get(ID_HEADER)
+        rec = cls.get(str(int(did)) if did is not None else "", {})
+        vals = [rec.get("real_reason", ""), rec.get("detail", ""),
+                rec.get("rationale", ""), rec.get("confidence", "")]
+        for i, v in enumerate(vals):
+            ws.cell(r, len(headers) + 1 + i, v).alignment = Alignment(wrap_text=True, vertical="top")
+    wb.save(outp)
+    print(f"wrote {outp} ({len(rows)} rows, +{len(ADDED)} columns)")
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print(__doc__); sys.exit(1)
@@ -76,5 +101,7 @@ if __name__ == "__main__":
         read(sys.argv[2], sys.argv[3])
     elif sys.argv[1] == "write":
         write(sys.argv[2], sys.argv[3], sys.argv[4])
+    elif sys.argv[1] == "write-from-json":
+        write_from_json(sys.argv[2], sys.argv[3], sys.argv[4])
     else:
         print(__doc__); sys.exit(1)
