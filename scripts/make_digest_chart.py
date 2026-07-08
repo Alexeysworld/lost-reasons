@@ -10,15 +10,15 @@ SRC={56:"Холодные",58:"Горячие",63:"Ивент/контент",39
 srcmap={}
 for d in raw:
     sid=(d.get("custom_fields") or {}).get("af70f9391eeba6e8849e5de4bf671c05dfa80a33")
-    srcmap[d["id"]]=SRC.get(sid,"Не указан")
+    srcmap[d["id"]]=SRC.get(sid,"Холодные")  # источник не указан -> Холодные
 
 import collections
 ct=collections.defaultdict(lambda: collections.Counter())
 for k,v in cls.items():
     ct[v["real_reason"]][srcmap[int(k)]]+=1
 
-order=["Холодные","Горячие","Ивент/контент","Не указан"]
-colors={"Холодные":"#aec5f2","Горячие":"#f2a6a6","Ивент/контент":"#f5e07a","Не указан":"#d0d0d0"}
+order=["Холодные","Горячие","Ивент/контент"]
+colors={"Холодные":"#aec5f2","Горячие":"#f2a6a6","Ивент/контент":"#f5e07a"}
 # sort categories by total asc (barh bottom-up) so biggest on top
 cats=sorted(ct.keys(), key=lambda c: sum(ct[c].values()))
 labels={"Клиенту дорого, хотя база норм":"Клиенту дорого, хотя база норм",
