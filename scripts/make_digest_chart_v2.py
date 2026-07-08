@@ -103,13 +103,13 @@ def variant_c():
         # total + current share %
         jsh=round(100*t/N); msh=round(100*mc.get(c,0)/mtot)
         ax.text(t+0.5,i,f"{t}",va="center",ha="left",fontsize=11,fontweight="bold",color="#222",zorder=4)
-        ax.text(t+1.5,i,f"{jsh}%",va="center",ha="left",fontsize=10,fontweight="bold",color="#555",zorder=4)
-        # vs May share (both shares shown -> count-independent)
+        ax.text(t+1.5,i,f"{jsh}%",va="center",ha="left",fontsize=9.5,color="#9a9a9a",zorder=4)
+        # delta vs May in percentage points
         d=jsh-msh
-        if d>0: ar,dc="▲","#c0392b"
-        elif d<0: ar,dc="▼","#27ae60"
-        else: ar,dc="=","#9a9a9a"
-        ax.text(t+3.1,i,f"{ar} май {msh}%",va="center",ha="left",fontsize=9,color=dc,fontweight="bold",zorder=4)
+        if d>0: dt,dc=f"▲ +{d} п.п.","#c0392b"
+        elif d<0: dt,dc=f"▼ {d} п.п.","#27ae60"
+        else: dt,dc="= 0 п.п.","#9a9a9a"
+        ax.text(t+3.0,i,dt,va="center",ha="left",fontsize=9,color=dc,fontweight="bold",zorder=4)
     # inline source labels above top bar
     top=len(cats)-1; l=0
     for s in order:
@@ -120,7 +120,7 @@ def variant_c():
     ax.set_ylim(-0.6,len(cats)-0.1); ax.set_xlim(-0.5,21); ax.set_xticks([]); ax.tick_params(left=False)
     for s in ax.spines.values(): s.set_visible(False)
     ax.set_title("Причины проигрыша · Midmarket · июнь 2026",fontsize=14,fontweight="bold",color="#222",loc="left",pad=26)
-    ax.annotate("60 сделок · стек по источнику · доля vs доля в мае (▲▼)",(0,1.03),xycoords="axes fraction",fontsize=9.5,color="#9a9a9a")
+    ax.annotate("60 сделок · стек по источнику · ▲▼ п.п. к маю",(0,1.03),xycoords="axes fraction",fontsize=9.5,color="#9a9a9a")
     plt.tight_layout(); plt.savefig("output/june_2026_chart_v2c.png",dpi=150,bbox_inches="tight"); plt.close()
     print("saved v2c")
 variant_c()
