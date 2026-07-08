@@ -84,3 +84,42 @@ ax.annotate(f"«Не наш сегмент» (SS + Нецелевой): {ss} · 
             (0,-0.06),xycoords="axes fraction",fontsize=9.5,color="#3b6fd4",fontweight="bold")
 plt.tight_layout(); plt.savefig("output/june_2026_chart_v2b.png",dpi=150,bbox_inches="tight"); plt.close()
 print("saved v2a and v2b")
+
+# ============ VARIANT C: stacked-by-source + rounded ends + MoM delta ============
+def variant_c():
+    fig,ax=plt.subplots(figsize=(11.5,6))
+    LW=16
+    for i,c in enumerate(cats):
+        segs=[(s,ct[c][s]) for s in order if ct[c][s]>0]
+        t=cat[c]
+        # rounded end caps (drawn first, behind): left=first seg color, right=last seg color
+        ax.plot(0,i,marker="o",markersize=LW,color=COL[segs[0][0]],zorder=2,markeredgewidth=0)
+        ax.plot(t,i,marker="o",markersize=LW,color=COL[segs[-1][0]],zorder=2,markeredgewidth=0)
+        left=0
+        for s,v in segs:
+            ax.plot([left,left+v],[i,i],lw=LW,solid_capstyle="butt",color=COL[s],zorder=3)
+            if v>=2: ax.text(left+v/2,i,str(v),va="center",ha="center",fontsize=9,color="white",fontweight="bold",zorder=4)
+            left+=v
+        # total + %
+        ax.text(t+0.5,i,f"{t}",va="center",ha="left",fontsize=11,fontweight="bold",color="#222",zorder=4)
+        ax.text(t+1.5,i,f"{round(100*t/N)}%",va="center",ha="left",fontsize=9.5,color="#9a9a9a",zorder=4)
+        # delta
+        d=delta_pp(c)
+        if d>0: dt,dc=f"▲ +{d}","#c0392b"
+        elif d<0: dt,dc=f"▼ {d}","#27ae60"
+        else: dt,dc="= 0","#9a9a9a"
+        ax.text(t+3.0,i,dt,va="center",ha="left",fontsize=9,color=dc,fontweight="bold",zorder=4)
+    # inline source labels above top bar
+    top=len(cats)-1; l=0
+    for s in order:
+        v=ct[cats[top]][s]
+        if v>0: ax.text(l+v/2,top+0.5,s,ha="center",va="bottom",fontsize=8.5,color=COL[s],fontweight="bold")
+        l+=v
+    ax.set_yticks(range(len(cats))); ax.set_yticklabels([lbl(c) for c in cats],fontsize=10.5,color="#333")
+    ax.set_ylim(-0.6,len(cats)-0.1); ax.set_xlim(-0.5,20); ax.set_xticks([]); ax.tick_params(left=False)
+    for s in ax.spines.values(): s.set_visible(False)
+    ax.set_title("Причины проигрыша · Midmarket · июнь 2026",fontsize=14,fontweight="bold",color="#222",loc="left",pad=26)
+    ax.annotate("60 сделок · стек по источнику · ▲▼ п.п. к маю",(0,1.03),xycoords="axes fraction",fontsize=9.5,color="#9a9a9a")
+    plt.tight_layout(); plt.savefig("output/june_2026_chart_v2c.png",dpi=150,bbox_inches="tight"); plt.close()
+    print("saved v2c")
+variant_c()
