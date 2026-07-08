@@ -4,7 +4,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
 
-cls=json.load(open("data/june_full_classifications.json"))
+cls=json.load(open("data/june_final_classifications.json"))
+cls={k:v for k,v in cls.items() if v["real_reason"]!="Не определено"}  # 1 сделка на ручной проверке
 raw=json.load(open("data/deals_dump_june311549.json"))["data"]
 SRC={56:"Холодные",58:"Горячие",63:"Ивент/контент",3977:"Ивент/контент"}
 srcmap={}
